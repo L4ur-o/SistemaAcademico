@@ -1,8 +1,3 @@
-"""
-EduAI - Configurações Centralizadas
-Sistema de configuração para a Plataforma de Ensino Inteligente
-"""
-
 import os
 from typing import Dict, Any
 from dataclasses import dataclass

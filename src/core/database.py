@@ -1,8 +1,3 @@
-"""
-EduAI - Gerenciamento de Banco de Dados
-Sistema de conexão e operações com MySQL
-"""
-
 import pymysql
 import pymysql.cursors
 import threading
@@ -17,10 +12,8 @@ from ..utils.logger import get_logger, LogOperation
 from ..utils.cache import cached, get_user_cache, get_aula_cache, get_historico_cache
 from ..utils.validators import db_validator
 
-# Configurar logging
 logger = get_logger('database')
 
-# Classe de erro compatível
 class DatabaseError(Exception):
     pass
 
@@ -362,10 +355,10 @@ class DatabaseManager:
                         WHERE table_schema = DATABASE()
                         AND table_name = 'aulas' 
                         AND column_name = 'embedding_json'
-                    ) as exists;
+                    ) AS col_exists;
                 """)
                 result = cursor.fetchone()
-                column_exists = result.get('exists', False) if result else False
+                column_exists = bool(result.get('col_exists')) if result else False
                 
                 if not column_exists:
                     cursor.execute("""
@@ -532,7 +525,7 @@ class DatabaseManager:
                    u.ultimo_acesso,
                    u.data_cadastro,
                    u.perfil,
-                   COUNT(*) FILTER (WHERE h.id_usuario IS NOT NULL) AS total_pesquisas
+                   COUNT(h.id_usuario) AS total_pesquisas
             FROM usuario u
             LEFT JOIN historico h ON h.id_usuario = u.id
             WHERE u.perfil = 'aluno'
@@ -573,8 +566,8 @@ class DatabaseManager:
     def get_monthly_search_counts(self, months: int = 6) -> List[Dict]:
         """Retorna contagem de pesquisas por mês (últimos N meses)."""
         query = """
-            SELECT TO_CHAR(date_trunc('month', h.timestamp), 'Mon') AS mes,
-                   date_trunc('month', h.timestamp) AS mes_data,
+            SELECT DATE_FORMAT(h.timestamp, '%b') AS mes,
+                   DATE_FORMAT(h.timestamp, '%Y-%m-01') AS mes_data,
                    COUNT(*) AS total
             FROM historico h
             GROUP BY mes, mes_data
@@ -773,11 +766,11 @@ class DatabaseManager:
             SELECT 
                 COUNT(*) as total_feedbacks,
                 AVG(rating) as media_rating,
-                COUNT(*) FILTER (WHERE rating = 5) as cinco_estrelas,
-                COUNT(*) FILTER (WHERE rating = 4) as quatro_estrelas,
-                COUNT(*) FILTER (WHERE rating = 3) as tres_estrelas,
-                COUNT(*) FILTER (WHERE rating = 2) as duas_estrelas,
-                COUNT(*) FILTER (WHERE rating = 1) as uma_estrela
+                SUM(CASE WHEN rating = 5 THEN 1 ELSE 0 END) as cinco_estrelas,
+                SUM(CASE WHEN rating = 4 THEN 1 ELSE 0 END) as quatro_estrelas,
+                SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END) as tres_estrelas,
+                SUM(CASE WHEN rating = 2 THEN 1 ELSE 0 END) as duas_estrelas,
+                SUM(CASE WHEN rating = 1 THEN 1 ELSE 0 END) as uma_estrela
             FROM feedback 
             WHERE id_aula = %s
         """
@@ -969,11 +962,11 @@ class DatabaseManager:
                         SELECT 1 FROM information_schema.tables 
                         WHERE table_schema = DATABASE()
                         AND table_name = 'usuario'
-                    ) as exists;
+                    ) AS col_exists;
                 """)
                 
                 result = cursor.fetchone()
-                table_exists = result['exists'] if result else False
+                table_exists = bool(result.get('col_exists')) if result else False
                 
                 if not table_exists:
                     # Criar tabela usuario
@@ -1004,11 +997,11 @@ class DatabaseManager:
                             WHERE table_schema = DATABASE()
                             AND table_name = 'usuario' 
                             AND column_name = 'perfil'
-                        ) as exists;
+                        ) AS col_exists;
                     """)
                     
                     result = cursor.fetchone()
-                    perfil_column_exists = result['exists'] if result else False
+                    perfil_column_exists = bool(result.get('col_exists')) if result else False
                     
                     if not perfil_column_exists:
                         # Adicionar coluna perfil
@@ -1025,11 +1018,11 @@ class DatabaseManager:
                             WHERE table_schema = DATABASE()
                             AND table_name = 'usuario' 
                             AND column_name = 'ativo'
-                        ) as exists;
+                        ) AS col_exists;
                     """)
                     
                     result = cursor.fetchone()
-                    ativo_column_exists = result['exists'] if result else False
+                    ativo_column_exists = bool(result.get('col_exists')) if result else False
                     
                     if not ativo_column_exists:
                         # Adicionar coluna ativo

@@ -1,8 +1,3 @@
-"""
-EduAI - Sistema de Logging
-Sistema centralizado de logging para a aplicação
-"""
-
 import logging
 import logging.handlers
 import os
@@ -12,7 +7,6 @@ from typing import Optional
 from ..config import config
 
 class EduAILogger:
-    """Classe para gerenciamento de logs da aplicação"""
     
     _instance: Optional['EduAILogger'] = None
     _initialized: bool = False
@@ -29,50 +23,44 @@ class EduAILogger:
     
     def _setup_logging(self):
         """Configura o sistema de logging"""
-        # Criar diretório de logs se não existir
-        log_dir = Path("logs")
-        log_dir.mkdir(exist_ok=True)
-        
-        # Configuração do logger principal
         self.logger = logging.getLogger('EduAI')
         self.logger.setLevel(getattr(logging, config.app.log_level))
         
-        # Limpar handlers existentes
         self.logger.handlers.clear()
         
-        # Formato das mensagens
         formatter = logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
         )
         
-        # Handler para console (sempre ativo)
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.INFO)
         console_handler.setFormatter(formatter)
         self.logger.addHandler(console_handler)
-        
-        # Handler para arquivo (apenas em produção)
-        if not config.app.debug_mode:
+
+        enable_file_logs = os.getenv("ENABLE_FILE_LOGS", "false").strip().lower() == "true"
+        if enable_file_logs:
+            log_dir = Path("logs")
+            log_dir.mkdir(exist_ok=True)
+
             log_file = log_dir / f"eduai_{datetime.now().strftime('%Y%m%d')}.log"
             file_handler = logging.handlers.RotatingFileHandler(
-                log_file, 
-                maxBytes=10*1024*1024,  # 10MB
-                backupCount=5
+                log_file,
+                maxBytes=10 * 1024 * 1024,
+                backupCount=5,
             )
             file_handler.setLevel(logging.DEBUG)
             file_handler.setFormatter(formatter)
             self.logger.addHandler(file_handler)
-        
-        # Handler para erros críticos
-        error_file = log_dir / "errors.log"
-        error_handler = logging.handlers.RotatingFileHandler(
-            error_file,
-            maxBytes=5*1024*1024,  # 5MB
-            backupCount=3
-        )
-        error_handler.setLevel(logging.ERROR)
-        error_handler.setFormatter(formatter)
-        self.logger.addHandler(error_handler)
+
+            error_file = log_dir / "errors.log"
+            error_handler = logging.handlers.RotatingFileHandler(
+                error_file,
+                maxBytes=5 * 1024 * 1024,
+                backupCount=3,
+            )
+            error_handler.setLevel(logging.ERROR)
+            error_handler.setFormatter(formatter)
+            self.logger.addHandler(error_handler)
     
     def get_logger(self, name: str = None) -> logging.Logger:
         """Retorna um logger específico"""
@@ -114,15 +102,12 @@ class EduAILogger:
             message += f" - {details}"
         self.logger.info(message)
 
-# Instância global do logger
 logger_manager = EduAILogger()
 
-# Função de conveniência para obter logger
 def get_logger(name: str = None) -> logging.Logger:
     """Função de conveniência para obter um logger"""
     return logger_manager.get_logger(name)
 
-# Decorator para logging automático de funções
 def log_function_call(logger_name: str = None):
     """Decorator para logar automaticamente chamadas de função"""
     def decorator(func):
@@ -139,7 +124,6 @@ def log_function_call(logger_name: str = None):
         return wrapper
     return decorator
 
-# Context manager para logging de operações
 class LogOperation:
     """Context manager para logar operações"""
     
@@ -159,4 +143,4 @@ class LogOperation:
             self.logger.info(f"Completed {self.operation} in {duration:.3f}s")
         else:
             self.logger.error(f"Failed {self.operation} after {duration:.3f}s: {exc_val}")
-        return False  # Não suprimir exceções
+        return False

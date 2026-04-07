@@ -1,25 +1,14 @@
-"""
-EduAI - Ponto de Entrada Principal
-Sistema de inicialização da Plataforma de Ensino Inteligente
-"""
-
 import sys
-import os
-from pathlib import Path
 from PySide6.QtWidgets import QApplication, QMessageBox
 from PySide6.QtCore import Qt
 
-# Adicionar o diretório raiz ao path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from src.config import config, constants
-from src.utils import get_logger, cache_manager
-from src.core.database import db_manager
-from src.core.app import EduAIManager
+from .config import config
+from .utils import get_logger, cache_manager
+from .core.database import db_manager
+from .core.app import EduAIManager
 
 def setup_application():
     """Configura a aplicação Qt"""
-    # Verificar se já existe uma instância do QApplication
     app = QApplication.instance()
     if app is None:
         app = QApplication(sys.argv)
@@ -27,32 +16,22 @@ def setup_application():
         app.setApplicationVersion(config.app.app_version)
         app.setOrganizationName("EduAI")
         
-        # Configurar estilo da aplicação
         app.setStyle('Fusion')
     
     return app
 
 def setup_directories():
-    """Cria diretórios necessários"""
-    try:
-        # Criar diretórios se não existirem
-        constants.LOGS_DIR.mkdir(exist_ok=True)
-        constants.CACHE_DIR.mkdir(exist_ok=True)
-        constants.IMAGES_DIR.mkdir(exist_ok=True)
-        
-        return True
-    except Exception as e:
-        print(f"Erro ao criar diretórios: {e}")
-        return False
+    """Mantido por compatibilidade (não cria pastas automaticamente)."""
+    return True
 
 def check_dependencies():
     """Verifica se todas as dependências estão disponíveis"""
     missing_deps = []
     
     try:
-        import psycopg2
+        import pymysql
     except ImportError:
-        missing_deps.append("psycopg2-binary")
+        missing_deps.append("PyMySQL")
     
     try:
         import qtawesome
@@ -91,10 +70,8 @@ def cleanup_resources():
     logger = get_logger('main')
     
     try:
-        # Fechar pool de conexões
         db_manager.close_pool()
         
-        # Limpar cache
         cache_manager.clear_all()
         
         logger.info("Recursos limpos com sucesso")
@@ -119,7 +96,6 @@ def main():
     try:
         logger.info(f"Iniciando {config.app.app_name} v{config.app.app_version}")
         
-        # Verificar dependências
         if not check_dependencies():
             show_error_dialog(
                 "Dependências Faltando",
@@ -128,7 +104,6 @@ def main():
             )
             return 1
         
-        # Configurar diretórios
         if not setup_directories():
             show_error_dialog(
                 "Erro de Configuração",
@@ -136,10 +111,8 @@ def main():
             )
             return 1
         
-        # Configurar aplicação Qt
         app = setup_application()
         
-        # Inicializar banco de dados
         if not initialize_database():
             show_error_dialog(
                 "Erro de Conexão com Banco de Dados",
@@ -157,10 +130,8 @@ def main():
             )
             return 1
         
-        # Configurar limpeza ao encerrar
         app.aboutToQuit.connect(cleanup_resources)
         
-        # Iniciar gerenciador da aplicação
         manager = EduAIManager(app)
         manager.start()
         
