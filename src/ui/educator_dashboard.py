@@ -285,7 +285,7 @@ class EducatorDashboard(QMainWindow):
                 padding: 6px 8px;
             }}
             QTableWidget::item:selected {{
-                background: #ccfbf1;
+                background: {theme.nav_hover};
                 color: {theme.text};
             }}
             """
