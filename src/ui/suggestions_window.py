@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal, QTimer, QPropertyAnimation, QEasingCurve
 from PySide6.QtGui import QFont, QCursor, QPixmap, QPainter, QColor, QLinearGradient
 import qtawesome as qta
+from ..config import theme
 from ..core.database import db_manager
 from ..utils.font_utils import get_portable_font
 
@@ -38,13 +39,13 @@ class ChatMessageWidget(QWidget):
             # Container da mensagem
             message_container = QFrame()
             message_container.setObjectName("userMessage")
-            message_container.setStyleSheet("""
-                QFrame#userMessage {
-                    background: #000000;
+            message_container.setStyleSheet(f"""
+                QFrame#userMessage {{
+                    background: {theme.primary};
                     border-radius: 18px 18px 4px 18px;
                     padding: 15px 20px;
                     max-width: 400px;
-                }
+                }}
             """)
             
             message_layout = QVBoxLayout(message_container)
@@ -74,7 +75,7 @@ class ChatMessageWidget(QWidget):
             # Avatar da IA
             avatar_label = QLabel()
             avatar_label.setFixedSize(40, 40)
-            avatar_label.setPixmap(qta.icon('fa5s.robot', color="#2c3e50").pixmap(40, 40))
+            avatar_label.setPixmap(qta.icon('fa5s.robot', color=theme.text).pixmap(40, 40))
             avatar_label.setStyleSheet("""
                 QLabel {
                     background: #f8fafc;
@@ -105,7 +106,7 @@ class ChatMessageWidget(QWidget):
             # Texto da mensagem
             message_label = QLabel(message)
             message_label.setFont(get_portable_font("Segoe UI", 12))
-            message_label.setStyleSheet("color: #2c3e50; line-height: 1.4;")
+            message_label.setStyleSheet(f"color: {theme.text}; line-height: 1.4;")
             message_label.setWordWrap(True)
             message_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
             message_layout.addWidget(message_label)
@@ -114,7 +115,7 @@ class ChatMessageWidget(QWidget):
             if timestamp:
                 time_label = QLabel(timestamp)
                 time_label.setFont(get_portable_font("Segoe UI", 9))
-                time_label.setStyleSheet("color: #7f8c8d;")
+                time_label.setStyleSheet(f"color: {theme.text_muted};")
                 time_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
                 message_layout.addWidget(time_label)
             
@@ -176,14 +177,14 @@ class ChatInterface(QWidget):
         # Área de entrada
         input_container = QFrame()
         input_container.setObjectName("inputContainer")
-        input_container.setStyleSheet("""
-            QFrame#inputContainer {
-                background: #ffffff;
-                border: 2px solid #e2e8f0;
+        input_container.setStyleSheet(f"""
+            QFrame#inputContainer {{
+                background: {theme.surface};
+                border: 2px solid {theme.border};
                 border-radius: 12px;
                 padding: 15px;
                 margin: 10px;
-            }
+            }}
         """)
         
         input_layout = QHBoxLayout(input_container)
@@ -195,43 +196,43 @@ class ChatInterface(QWidget):
         self.message_input.setPlaceholderText(self.placeholder_text)
         self.message_input.setFont(get_portable_font("Segoe UI", 12))
         self.message_input.setMaximumHeight(100)
-        self.message_input.setStyleSheet("""
-            QTextEdit {
-                background: #ffffff;
-                border: 2px solid #e2e8f0;
+        self.message_input.setStyleSheet(f"""
+            QTextEdit {{
+                background: {theme.surface};
+                border: 2px solid {theme.border};
                 border-radius: 8px;
                 padding: 12px 15px;
-                color: #2c3e50;
+                color: {theme.text};
                 font-size: 12px;
                 line-height: 1.4;
-            }
-            QTextEdit:focus {
-                border-color: #3b82f6;
-                background: #ffffff;
-            }
-            QTextEdit::placeholder {
-                color: #94a3b8;
-            }
+            }}
+            QTextEdit:focus {{
+                border-color: {theme.focus};
+                background: {theme.surface};
+            }}
+            QTextEdit::placeholder {{
+                color: {theme.text_muted};
+            }}
         """)
         self.message_input.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         input_layout.addWidget(self.message_input)
         
         # Botão de envio
         self.send_button = QPushButton()
-        self.send_button.setIcon(qta.icon('fa5s.paper-plane', color="#ffffff"))
+        self.send_button.setIcon(qta.icon('fa5s.paper-plane', color=theme.on_dark))
         self.send_button.setFixedSize(50, 50)
-        self.send_button.setStyleSheet("""
-            QPushButton {
-                background: #000000;
+        self.send_button.setStyleSheet(f"""
+            QPushButton {{
+                background: {theme.primary};
                 border: none;
                 border-radius: 25px;
-            }
-            QPushButton:hover {
-                background: #111111;
-            }
-            QPushButton:pressed {
-                background: #222222;
-            }
+            }}
+            QPushButton:hover {{
+                background: {theme.primary_hover};
+            }}
+            QPushButton:pressed {{
+                background: {theme.primary_pressed};
+            }}
         """)
         self.send_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.send_button.clicked.connect(self.send_message)
@@ -375,7 +376,7 @@ class SuggestionsWidget(QWidget):
         
         # Logo/Ícone
         logo_label = QLabel()
-        logo_label.setPixmap(qta.icon('fa5s.graduation-cap', color="#2c3e50").pixmap(48, 48))
+        logo_label.setPixmap(qta.icon('fa5s.graduation-cap', color=theme.text).pixmap(48, 48))
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         header_container.addWidget(logo_label)
         
@@ -383,7 +384,7 @@ class SuggestionsWidget(QWidget):
         title_label = QLabel("Sugestões de Aulas")
         title_font = QFont("Segoe UI", 18, QFont.Weight.Bold)
         title_label.setFont(title_font)
-        title_label.setStyleSheet("color: #2c3e50; text-align: center;")
+        title_label.setStyleSheet(f"color: {theme.text}; text-align: center;")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         header_container.addWidget(title_label)
         
@@ -391,7 +392,7 @@ class SuggestionsWidget(QWidget):
         subtitle_label = QLabel("Crie aulas incríveis com nossa IA")
         subtitle_font = QFont("Segoe UI", 11)
         subtitle_label.setFont(subtitle_font)
-        subtitle_label.setStyleSheet("color: #7f8c8d; text-align: center;")
+        subtitle_label.setStyleSheet(f"color: {theme.text_muted}; text-align: center;")
         subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         subtitle_label.setWordWrap(True)
         header_container.addWidget(subtitle_label)
@@ -404,72 +405,72 @@ class SuggestionsWidget(QWidget):
         
         # Botão Nova Sugestão
         new_suggestion_btn = QPushButton()
-        new_suggestion_btn.setIcon(qta.icon('fa5s.plus-circle', color="#ffffff"))
+        new_suggestion_btn.setIcon(qta.icon('fa5s.plus-circle', color=theme.on_dark))
         new_suggestion_btn.setText("Nova Sugestão")
         new_suggestion_btn.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
         new_suggestion_btn.setMinimumHeight(50)
-        new_suggestion_btn.setStyleSheet("""
-            QPushButton {
-                background: #000000;
-                color: #ffffff;
-                border: 2px solid #000000;
+        new_suggestion_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: {theme.primary};
+                color: {theme.on_dark};
+                border: 2px solid {theme.primary};
                 border-radius: 12px;
                 padding: 12px 20px;
                 text-align: left;
-            }
-            QPushButton:hover {
-                background: #111111;
-                border-color: #111111;
-            }
-            QPushButton:pressed {
-                background: #222222;
-            }
+            }}
+            QPushButton:hover {{
+                background: {theme.primary_hover};
+                border-color: {theme.primary_hover};
+            }}
+            QPushButton:pressed {{
+                background: {theme.primary_pressed};
+            }}
         """)
         new_suggestion_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         nav_container.addWidget(new_suggestion_btn)
         
         # Botão Minhas Sugestões
         my_suggestions_btn = QPushButton()
-        my_suggestions_btn.setIcon(qta.icon('fa5s.list-alt', color="#2c3e50"))
+        my_suggestions_btn.setIcon(qta.icon('fa5s.list-alt', color=theme.text))
         my_suggestions_btn.setText("Minhas Sugestões")
         my_suggestions_btn.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
         my_suggestions_btn.setMinimumHeight(50)
-        my_suggestions_btn.setStyleSheet("""
-            QPushButton {
-                background: #ffffff;
-                color: #2c3e50;
-                border: 2px solid #e2e8f0;
+        my_suggestions_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: {theme.surface};
+                color: {theme.text};
+                border: 2px solid {theme.border};
                 border-radius: 12px;
                 padding: 12px 20px;
                 text-align: left;
-            }
-            QPushButton:hover {
-                background: #f8fafc;
-                border-color: #cbd5e1;
-            }
+            }}
+            QPushButton:hover {{
+                background: {theme.surface_alt};
+                border-color: {theme.border_strong};
+            }}
         """)
         my_suggestions_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         nav_container.addWidget(my_suggestions_btn)
         
         # Botão Histórico
         history_btn = QPushButton()
-        history_btn.setIcon(qta.icon('fa5s.chart-line', color="#2c3e50"))
+        history_btn.setIcon(qta.icon('fa5s.chart-line', color=theme.text))
         history_btn.setText("Histórico")
         history_btn.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
         history_btn.setMinimumHeight(50)
-        history_btn.setStyleSheet("""
-            QPushButton {
-                background: #ffffff;
-                color: #2c3e50;
-                border: 2px solid #e2e8f0;
+        history_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: {theme.surface};
+                color: {theme.text};
+                border: 2px solid {theme.border};
                 border-radius: 12px;
                 padding: 12px 20px;
                 text-align: left;
-            }
-            QPushButton:hover {
-                background: #f8fafc;
-                border-color: #cbd5e1;
-            }
+            }}
+            QPushButton:hover {{
+                background: {theme.surface_alt};
+                border-color: {theme.border_strong};
+            }}
         """)
         history_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         nav_container.addWidget(history_btn)
@@ -495,37 +496,37 @@ class SuggestionsWidget(QWidget):
         user_layout.setSpacing(8)
         
         user_name_label = QLabel()
-        user_name_label.setPixmap(qta.icon('fa5s.user', color="#2c3e50").pixmap(16, 16))
+        user_name_label.setPixmap(qta.icon('fa5s.user', color=theme.text).pixmap(16, 16))
         user_name_label.setText(f" {self.user_name}")
         user_name_label.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
-        user_name_label.setStyleSheet("color: #2c3e50;")
+        user_name_label.setStyleSheet(f"color: {theme.text};")
         user_layout.addWidget(user_name_label)
         
         user_role_label = QLabel("Educador")
         user_role_label.setFont(QFont("Segoe UI", 10))
-        user_role_label.setStyleSheet("color: #7f8c8d;")
+        user_role_label.setStyleSheet(f"color: {theme.text_muted};")
         user_layout.addWidget(user_role_label)
         
         footer_container.addWidget(user_info)
         
         # Botão voltar
         back_button = QPushButton()
-        back_button.setIcon(qta.icon('fa5s.arrow-left', color="#2c3e50"))
+        back_button.setIcon(qta.icon('fa5s.arrow-left', color=theme.text))
         back_button.setText("Voltar ao Dashboard")
         back_button.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
         back_button.setMinimumHeight(45)
-        back_button.setStyleSheet("""
-            QPushButton {
-                background: #ffffff;
-                color: #2c3e50;
-                border: 2px solid #e2e8f0;
+        back_button.setStyleSheet(f"""
+            QPushButton {{
+                background: {theme.surface};
+                color: {theme.text};
+                border: 2px solid {theme.border};
                 border-radius: 12px;
                 padding: 12px 20px;
-            }
-            QPushButton:hover {
-                background: #f8fafc;
-                border-color: #cbd5e1;
-            }
+            }}
+            QPushButton:hover {{
+                background: {theme.surface_alt};
+                border-color: {theme.border_strong};
+            }}
         """)
         back_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         back_button.clicked.connect(self._go_back)
@@ -539,10 +540,10 @@ class SuggestionsWidget(QWidget):
         """Cria o conteúdo principal da aplicação"""
         main_content_widget = QWidget()
         main_content_widget.setObjectName("mainContent")
-        main_content_widget.setStyleSheet("""
-            QWidget#mainContent {
-                background: #ffffff;
-            }
+        main_content_widget.setStyleSheet(f"""
+            QWidget#mainContent {{
+                background: {theme.surface};
+            }}
         """)
         
         main_layout = QVBoxLayout(main_content_widget)
@@ -557,28 +558,28 @@ class SuggestionsWidget(QWidget):
         scroll_area.setWidgetResizable(True)
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        scroll_area.setStyleSheet("""
-            QScrollArea {
+        scroll_area.setStyleSheet(f"""
+            QScrollArea {{
                 border: none;
                 background: transparent;
-            }
-            QScrollBar:vertical {
-                background: #e2e8f0;
+            }}
+            QScrollBar:vertical {{
+                background: {theme.border};
                 width: 12px;
                 border-radius: 6px;
                 margin: 0px;
-            }
-            QScrollBar::handle:vertical {
-                background: #cbd5e1;
+            }}
+            QScrollBar::handle:vertical {{
+                background: {theme.border_strong};
                 border-radius: 6px;
                 min-height: 20px;
-            }
-            QScrollBar::handle:vertical:hover {
-                background: #a0aec0;
-            }
-            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+            }}
+            QScrollBar::handle:vertical:hover {{
+                background: {theme.text_muted};
+            }}
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
                 height: 0px;
-            }
+            }}
         """)
         
         # Widget de conteúdo
@@ -613,11 +614,11 @@ class SuggestionsWidget(QWidget):
         
         # Título principal
         title_label = QLabel()
-        title_label.setPixmap(qta.icon('fa5s.lightbulb', color="#2c3e50").pixmap(32, 32))
+        title_label.setPixmap(qta.icon('fa5s.lightbulb', color=theme.text).pixmap(32, 32))
         title_label.setText(" Criar Nova Sugestão de Aula")
         title_font = QFont("Segoe UI", 24, QFont.Weight.Bold)
         title_label.setFont(title_font)
-        title_label.setStyleSheet("color: #2c3e50;")
+        title_label.setStyleSheet(f"color: {theme.text};")
         header_layout.addWidget(title_label)
         
         header_layout.addStretch()
@@ -628,48 +629,48 @@ class SuggestionsWidget(QWidget):
         
         # Botão salvar rascunho
         save_draft_btn = QPushButton()
-        save_draft_btn.setIcon(qta.icon('fa5s.save', color="#2c3e50"))
+        save_draft_btn.setIcon(qta.icon('fa5s.save', color=theme.text))
         save_draft_btn.setText("Salvar Rascunho")
         save_draft_btn.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
         save_draft_btn.setMinimumHeight(45)
-        save_draft_btn.setStyleSheet("""
-            QPushButton {
-                background: #ffffff;
-                color: #2c3e50;
-                border: 2px solid #e2e8f0;
+        save_draft_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: {theme.surface};
+                color: {theme.text};
+                border: 2px solid {theme.border};
                 border-radius: 12px;
                 padding: 12px 20px;
                 min-width: 140px;
-            }
-            QPushButton:hover {
-                background: #f8fafc;
-                border-color: #cbd5e1;
-            }
+            }}
+            QPushButton:hover {{
+                background: {theme.surface_alt};
+                border-color: {theme.border_strong};
+            }}
         """)
         save_draft_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         actions_layout.addWidget(save_draft_btn)
         
         # Botão enviar
         submit_btn = QPushButton()
-        submit_btn.setIcon(qta.icon('fa5s.paper-plane', color="#ffffff"))
+        submit_btn.setIcon(qta.icon('fa5s.paper-plane', color=theme.on_dark))
         submit_btn.setText("Enviar Sugestão")
         submit_btn.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
         submit_btn.setMinimumHeight(45)
-        submit_btn.setStyleSheet("""
-            QPushButton {
-                background: #000000;
-                color: #ffffff;
+        submit_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: {theme.primary};
+                color: {theme.on_dark};
                 border: none;
                 border-radius: 12px;
                 padding: 12px 20px;
                 min-width: 160px;
-            }
-            QPushButton:hover {
-                background: #111111;
-            }
-            QPushButton:pressed {
-                background: #222222;
-            }
+            }}
+            QPushButton:hover {{
+                background: {theme.primary_hover};
+            }}
+            QPushButton:pressed {{
+                background: {theme.primary_pressed};
+            }}
         """)
         submit_btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         submit_btn.clicked.connect(self._submit_suggestion)
@@ -704,7 +705,7 @@ class SuggestionsWidget(QWidget):
         
         # Ícone da seção
         icon_label = QLabel()
-        icon_label.setPixmap(qta.icon('fa5s.info-circle', color="#2c3e50").pixmap(32, 32))
+        icon_label.setPixmap(qta.icon('fa5s.info-circle', color=theme.text).pixmap(32, 32))
         header_layout.addWidget(icon_label)
         
         # Título e descrição
@@ -714,13 +715,13 @@ class SuggestionsWidget(QWidget):
         title_label = QLabel("Informações Básicas")
         title_font = QFont("Segoe UI", 18, QFont.Weight.Bold)
         title_label.setFont(title_font)
-        title_label.setStyleSheet("color: #2c3e50;")
+        title_label.setStyleSheet(f"color: {theme.text};")
         title_container.addWidget(title_label)
         
         desc_label = QLabel("Converse com a IA para definir título, categoria, nível e duração da sua aula")
         desc_font = QFont("Segoe UI", 12)
         desc_label.setFont(desc_font)
-        desc_label.setStyleSheet("color: #7f8c8d;")
+        desc_label.setStyleSheet(f"color: {theme.text_muted};")
         desc_label.setWordWrap(True)
         title_container.addWidget(desc_label)
         
@@ -760,7 +761,7 @@ class SuggestionsWidget(QWidget):
         
         # Ícone da seção
         icon_label = QLabel()
-        icon_label.setPixmap(qta.icon('fa5s.file-alt', color="#2c3e50").pixmap(32, 32))
+        icon_label.setPixmap(qta.icon('fa5s.file-alt', color=theme.text).pixmap(32, 32))
         header_layout.addWidget(icon_label)
         
         # Título e descrição
@@ -770,13 +771,13 @@ class SuggestionsWidget(QWidget):
         title_label = QLabel("Descrição da Aula")
         title_font = QFont("Segoe UI", 18, QFont.Weight.Bold)
         title_label.setFont(title_font)
-        title_label.setStyleSheet("color: #2c3e50;")
+        title_label.setStyleSheet(f"color: {theme.text};")
         title_container.addWidget(title_label)
         
         desc_label = QLabel("Descreva detalhadamente o conteúdo, metodologia e recursos da sua aula")
         desc_font = QFont("Segoe UI", 12)
         desc_label.setFont(desc_font)
-        desc_label.setStyleSheet("color: #7f8c8d;")
+        desc_label.setStyleSheet(f"color: {theme.text_muted};")
         desc_label.setWordWrap(True)
         title_container.addWidget(desc_label)
         
@@ -816,7 +817,7 @@ class SuggestionsWidget(QWidget):
         
         # Ícone da seção
         icon_label = QLabel()
-        icon_label.setPixmap(qta.icon('fa5s.bullseye', color="#2c3e50").pixmap(32, 32))
+        icon_label.setPixmap(qta.icon('fa5s.bullseye', color=theme.text).pixmap(32, 32))
         header_layout.addWidget(icon_label)
         
         # Título e descrição
@@ -826,13 +827,13 @@ class SuggestionsWidget(QWidget):
         title_label = QLabel("Objetivos de Aprendizagem")
         title_font = QFont("Segoe UI", 18, QFont.Weight.Bold)
         title_label.setFont(title_font)
-        title_label.setStyleSheet("color: #2c3e50;")
+        title_label.setStyleSheet(f"color: {theme.text};")
         title_container.addWidget(title_label)
         
         desc_label = QLabel("Defina claramente o que os alunos devem aprender e conseguir fazer após a aula")
         desc_font = QFont("Segoe UI", 12)
         desc_label.setFont(desc_font)
-        desc_label.setStyleSheet("color: #7f8c8d;")
+        desc_label.setStyleSheet(f"color: {theme.text_muted};")
         desc_label.setWordWrap(True)
         title_container.addWidget(desc_label)
         
@@ -861,98 +862,92 @@ class SuggestionsWidget(QWidget):
     
     def _apply_styles(self):
         """Aplica estilos globais com melhor portabilidade CSS"""
-        self.setStyleSheet("""
+        t = theme
+        self.setStyleSheet(f"""
             /* Estilos globais da aplicação */
-            QMainWindow {
-                background: #ffffff !important;
-                color: #1e293b;
+            QMainWindow {{
+                background: {t.surface} !important;
+                color: {t.text};
                 font-family: 'Segoe UI', Arial, sans-serif;
-            }
+            }}
             
             /* Widget principal */
-            QWidget {
-                background: #ffffff !important;
-            }
+            QWidget {{
+                background: {t.surface} !important;
+            }}
             
-            /* Cards de seção - FORÇA BACKGROUND BRANCO */
-            QFrame#sectionCard {
-                background: #ffffff !important;
-                background-color: #ffffff !important;
+            /* Cards de seção */
+            QFrame#sectionCard {{
+                background: {t.surface} !important;
+                background-color: {t.surface} !important;
                 border-radius: 16px;
-                border: 1px solid #e2e8f0;
+                border: 1px solid {t.border};
                 margin: 8px;
-            }
+            }}
             
-            /* Todos os QFrame devem ter background branco */
-            QFrame {
-                background: #ffffff !important;
-                background-color: #ffffff !important;
-            }
+            QFrame {{
+                background: {t.surface} !important;
+                background-color: {t.surface} !important;
+            }}
             
-            /* Labels padrão */
-            QLabel {
-                color: #1e293b;
+            QLabel {{
+                color: {t.text};
                 font-family: 'Segoe UI', Arial, sans-serif;
                 background: transparent !important;
-            }
+            }}
             
-            /* Áreas de scroll */
-            QScrollArea {
+            QScrollArea {{
                 border: none;
                 background: transparent !important;
-            }
+            }}
             
-            /* Scrollbars personalizadas */
-            QScrollBar:vertical {
-                background: #f1f5f9;
+            QScrollBar:vertical {{
+                background: {t.surface_muted};
                 width: 12px;
                 border-radius: 6px;
                 margin: 0px;
-            }
+            }}
             
-            QScrollBar::handle:vertical {
-                background: #cbd5e1;
+            QScrollBar::handle:vertical {{
+                background: {t.border_strong};
                 border-radius: 6px;
                 min-height: 20px;
-            }
+            }}
             
-            QScrollBar::handle:vertical:hover {
-                background: #94a3b8;
-            }
+            QScrollBar::handle:vertical:hover {{
+                background: {t.text_muted};
+            }}
             
             QScrollBar::add-line:vertical, 
-            QScrollBar::sub-line:vertical {
+            QScrollBar::sub-line:vertical {{
                 height: 0px;
-            }
+            }}
             
             QScrollBar::add-page:vertical, 
-            QScrollBar::sub-page:vertical {
+            QScrollBar::sub-page:vertical {{
                 background: none;
-            }
+            }}
             
-            /* Botões padrão */
-            QPushButton {
+            QPushButton {{
                 font-family: 'Segoe UI', Arial, sans-serif;
                 font-weight: 600;
                 border-radius: 8px;
                 padding: 8px 16px;
-            }
+            }}
             
-            /* Inputs padrão */
-            QLineEdit, QTextEdit {
+            QLineEdit, QTextEdit {{
                 font-family: 'Segoe UI', Arial, sans-serif;
                 border-radius: 8px;
                 padding: 8px 12px;
-                background: #ffffff !important;
-            }
+                background: {t.surface} !important;
+            }}
             
-            /* Comboboxes */
-            QComboBox {
+            QComboBox {{
                 font-family: 'Segoe UI', Arial, sans-serif;
                 border-radius: 8px;
                 padding: 8px 12px;
-                background: #ffffff !important;
-            }
+                background: {t.surface} !important;
+            }}
         """)
     
     def _clear_form(self):
@@ -1032,13 +1027,13 @@ class SuggestionsWidget(QWidget):
         msg.setIcon(QMessageBox.Icon.Critical)
         msg.setWindowTitle("Erro")
         msg.setText(message)
-        msg.setStyleSheet("""
-            QMessageBox {
-                background-color: #ffffff;
-            }
-            QMessageBox QLabel {
-                color: #2c3e50;
-            }
+        msg.setStyleSheet(f"""
+            QMessageBox {{
+                background-color: {theme.surface};
+            }}
+            QMessageBox QLabel {{
+                color: {theme.text};
+            }}
         """)
         msg.exec()
     
@@ -1048,13 +1043,13 @@ class SuggestionsWidget(QWidget):
         msg.setIcon(QMessageBox.Icon.Information)
         msg.setWindowTitle("Sucesso")
         msg.setText(message)
-        msg.setStyleSheet("""
-            QMessageBox {
-                background-color: #ffffff;
-            }
-            QMessageBox QLabel {
-                color: #2c3e50;
-            }
+        msg.setStyleSheet(f"""
+            QMessageBox {{
+                background-color: {theme.surface};
+            }}
+            QMessageBox QLabel {{
+                color: {theme.text};
+            }}
         """)
         msg.exec()
     

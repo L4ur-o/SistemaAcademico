@@ -14,6 +14,7 @@ from PySide6.QtCharts import QChart, QChartView, QBarSet, QBarSeries, QBarCatego
 import qtawesome as qta
 
 from ..core.database import db_manager
+from ..config import theme
 
 
 class EducatorDashboard(QMainWindow):
@@ -41,10 +42,10 @@ class EducatorDashboard(QMainWindow):
         self.search_input.setPlaceholderText("Buscar aluno por nome...")
         self.search_input.returnPressed.connect(self._apply_filter)
         btn_search = QPushButton()
-        btn_search.setIcon(qta.icon('fa5s.search', color="#ffffff"))
+        btn_search.setIcon(qta.icon('fa5s.search', color=theme.on_dark))
         btn_search.setText("Buscar")
         btn_search.clicked.connect(self._apply_filter)
-        btn_search.setStyleSheet("QPushButton{background:#000;color:#fff;border-radius:6px;padding:6px 10px}")
+        btn_search.setStyleSheet(f"QPushButton{{background:{theme.primary};color:{theme.on_dark};border-radius:6px;padding:6px 10px}}")
         header.addWidget(self.search_input)
         header.addWidget(btn_search)
         root.addLayout(header)
@@ -60,7 +61,7 @@ class EducatorDashboard(QMainWindow):
         # KPIs
         kpi_frame = QFrame()
         kpi_frame.setObjectName("kpiFrame")
-        kpi_frame.setStyleSheet("QFrame#kpiFrame{background:#fff;border:1px solid #d1d5db;border-radius:8px}")
+        kpi_frame.setStyleSheet(f"QFrame#kpiFrame{{background:{theme.surface};border:1px solid {theme.border_input};border-radius:8px}}")
         kpi_grid = QGridLayout(kpi_frame)
         kpi_grid.setContentsMargins(16, 16, 16, 16)
         self.kpi_alunos = self._kpi_widget("Total de Alunos", "0")
@@ -97,12 +98,12 @@ class EducatorDashboard(QMainWindow):
 
         left_card = QFrame()
         left_card.setObjectName("leftCard")
-        left_card.setStyleSheet("QFrame#leftCard{background:#fff;border:1px solid #d1d5db;border-radius:8px}")
+        left_card.setStyleSheet(f"QFrame#leftCard{{background:{theme.surface};border:1px solid {theme.border_input};border-radius:8px}}")
         left_layout = QVBoxLayout(left_card)
         left_layout.setContentsMargins(12, 12, 12, 12)
         lbl_alunos = QLabel("Estudantes")
         lbl_alunos.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
-        lbl_alunos.setStyleSheet("color:#111827; margin-bottom:6px;")
+        lbl_alunos.setStyleSheet(f"color:{theme.text}; margin-bottom:6px;")
         left_layout.addWidget(lbl_alunos)
         self.table_students = QTableWidget(0, 6)
         self.table_students.setHorizontalHeaderLabels(["Nome", "Idade", "Nota", "Último acesso", "Perfil", "Pesquisas"]) 
@@ -114,12 +115,12 @@ class EducatorDashboard(QMainWindow):
 
         right_card = QFrame()
         right_card.setObjectName("rightCard")
-        right_card.setStyleSheet("QFrame#rightCard{background:#fff;border:1px solid #d1d5db;border-radius:8px}")
+        right_card.setStyleSheet(f"QFrame#rightCard{{background:{theme.surface};border:1px solid {theme.border_input};border-radius:8px}}")
         right_layout = QVBoxLayout(right_card)
         right_layout.setContentsMargins(12, 12, 12, 12)
         lbl_pesquisas = QLabel("Pesquisas do aluno")
         lbl_pesquisas.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
-        lbl_pesquisas.setStyleSheet("color:#111827; margin-bottom:6px;")
+        lbl_pesquisas.setStyleSheet(f"color:{theme.text}; margin-bottom:6px;")
         right_layout.addWidget(lbl_pesquisas)
         self.table_searches = QTableWidget(0, 3)
         self.table_searches.setHorizontalHeaderLabels(["Data/Hora", "Pergunta", "Aula"]) 
@@ -190,15 +191,15 @@ class EducatorDashboard(QMainWindow):
     def _kpi_widget(self, title: str, value: str):
         frame = QFrame()
         frame.setObjectName("kpiCard")
-        frame.setStyleSheet("QFrame#kpiCard{background:#fff;border:1px solid #d1d5db;border-radius:8px}")
+        frame.setStyleSheet(f"QFrame#kpiCard{{background:{theme.surface};border:1px solid {theme.border_input};border-radius:8px}}")
         lay = QVBoxLayout(frame)
         lay.setContentsMargins(16, 16, 16, 16)
         lbl_t = QLabel(title)
-        lbl_t.setStyleSheet("color:#6b7280")
+        lbl_t.setStyleSheet(f"color:{theme.icon_muted}")
         lbl_t.setFont(QFont("Segoe UI", 10))
         lbl_v = QLabel(value)
         lbl_v.setFont(QFont("Segoe UI", 24, QFont.Weight.Bold))
-        lbl_v.setStyleSheet("color:#111827")
+        lbl_v.setStyleSheet(f"color:{theme.text}")
         lay.addWidget(lbl_t)
         lay.addWidget(lbl_v)
         frame.setMinimumHeight(160)
@@ -208,7 +209,7 @@ class EducatorDashboard(QMainWindow):
     def _chart_card(self, title: str):
         card = QFrame()
         card.setObjectName("chartCard")
-        card.setStyleSheet("QFrame#chartCard{background:#fff;border:1px solid #d1d5db;border-radius:8px}")
+        card.setStyleSheet(f"QFrame#chartCard{{background:{theme.surface};border:1px solid {theme.border_input};border-radius:8px}}")
         lay = QVBoxLayout(card)
         lay.setContentsMargins(12, 12, 12, 12)
         lbl = QLabel(title)
@@ -266,59 +267,59 @@ class EducatorDashboard(QMainWindow):
         table.horizontalHeader().setHighlightSections(False)
         table.verticalHeader().setDefaultSectionSize(36)
         table.setStyleSheet(
-            """
-            QTableWidget {
-                background: #ffffff;
-                alternate-background-color: #fafafa;
-                gridline-color: #e5e7eb;
-                border: 1px solid #e5e7eb;
+            f"""
+            QTableWidget {{
+                background: {theme.surface};
+                alternate-background-color: {theme.surface_alt};
+                gridline-color: {theme.border};
+                border: 1px solid {theme.border};
                 border-radius: 8px;
-                color: #111827; /* texto padrão preto */
-            }
-            QTableWidget::item { color: #111827; }
-            QHeaderView::section {
-                background: #f9fafb;
-                color: #111827;
+                color: {theme.text};
+            }}
+            QTableWidget::item {{ color: {theme.text}; }}
+            QHeaderView::section {{
+                background: {theme.nav_hover};
+                color: {theme.text};
                 font-weight: 600;
-                border: 1px solid #e5e7eb;
+                border: 1px solid {theme.border};
                 padding: 6px 8px;
-            }
-            QTableWidget::item:selected {
-                background: #e6f0ff;
-                color: #111827;
-            }
+            }}
+            QTableWidget::item:selected {{
+                background: #ccfbf1;
+                color: {theme.text};
+            }}
             """
         )
 
     def _apply_styles(self):
         # Fundo geral claro
         self.setStyleSheet(
-            """
-            QMainWindow { background: #f5f7fb; }
-            QLabel { color: #111827; }
-            QFrame#leftCard, QFrame#rightCard, QFrame#kpiFrame, QFrame#chartCard {
-                background: #ffffff;
-                border: 1px solid #e5e7eb;
+            f"""
+            QMainWindow {{ background: {theme.surface_alt}; }}
+            QLabel {{ color: {theme.text}; }}
+            QFrame#leftCard, QFrame#rightCard, QFrame#kpiFrame, QFrame#chartCard {{
+                background: {theme.surface};
+                border: 1px solid {theme.border};
                 border-radius: 10px;
-            }
-            QLineEdit {
-                background: #ffffff;
-                border: 1px solid #e5e7eb;
+            }}
+            QLineEdit {{
+                background: {theme.surface};
+                border: 1px solid {theme.border};
                 border-radius: 8px;
                 padding: 6px 10px;
-                color: #111827;
-            }
-            QLineEdit::placeholder {
-                color: #6b7280;
-            }
-            QPushButton {
-                background: #111827;
-                color: #ffffff;
+                color: {theme.text};
+            }}
+            QLineEdit::placeholder {{
+                color: {theme.icon_muted};
+            }}
+            QPushButton {{
+                background: {theme.primary};
+                color: {theme.on_dark};
                 border: none;
                 border-radius: 8px;
                 padding: 8px 12px;
-            }
-            QPushButton:hover { background: #0b1220; }
+            }}
+            QPushButton:hover {{ background: {theme.primary_hover}; }}
             """
         )
         # Estilizar tabelas

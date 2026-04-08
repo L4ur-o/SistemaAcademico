@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
 from PySide6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QRect, Signal
 from PySide6.QtGui import QFont, QIcon, QPixmap, QColor, QCursor, QPalette
 import qtawesome as qta
+from ..config import theme
 from ..core.database import db_manager
 
 class LoginWindow(QMainWindow):
@@ -88,7 +89,7 @@ class LoginWindow(QMainWindow):
         
         # Logo e título (lado a lado)
         logo_container = QHBoxLayout()
-        logo_container.setSpacing(0)
+        logo_container.setSpacing(18)
         logo_container.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         # Ícone da plataforma
@@ -102,7 +103,7 @@ class LoginWindow(QMainWindow):
             logo_icon.setPixmap(logo_pixmap)
         else:
             # Fallback para ícone Font Awesome se a imagem não for encontrada
-            logo_icon.setPixmap(qta.icon('fa5s.graduation-cap', color="#ffffff").pixmap(80, 80))
+            logo_icon.setPixmap(qta.icon('fa5s.graduation-cap', color=theme.on_dark).pixmap(80, 80))
         logo_container.addWidget(logo_icon)
         
         # Container do texto (título e subtítulo)
@@ -114,7 +115,7 @@ class LoginWindow(QMainWindow):
         title_font = QFont("Segoe UI", 36, QFont.Weight.Bold)
         title_label.setFont(title_font)
         title_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        title_label.setStyleSheet("color: #ffffff; margin-bottom: 5px;")
+        title_label.setStyleSheet(f"color: {theme.on_dark}; margin-bottom: 5px;")
         text_container.addWidget(title_label)
         
         # Subtítulo
@@ -122,7 +123,7 @@ class LoginWindow(QMainWindow):
         subtitle_font = QFont("Segoe UI", 16)
         subtitle_label.setFont(subtitle_font)
         subtitle_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        subtitle_label.setStyleSheet("color: #ecf0f1; margin-bottom: 20px;")
+        subtitle_label.setStyleSheet(f"color: {theme.on_dark_muted}; margin-bottom: 20px;")
         text_container.addWidget(subtitle_label)
         
         logo_container.addLayout(text_container)
@@ -149,7 +150,7 @@ class LoginWindow(QMainWindow):
             
             # Ícone
             icon_label = QLabel()
-            icon_label.setPixmap(qta.icon(icon_name, color="#ffffff").pixmap(24, 24))
+            icon_label.setPixmap(qta.icon(icon_name, color=theme.on_dark).pixmap(24, 24))
             feature_layout.addWidget(icon_label)
             
             # Texto
@@ -158,12 +159,12 @@ class LoginWindow(QMainWindow):
             
             title_label = QLabel(title)
             title_label.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
-            title_label.setStyleSheet("color: #ffffff;")
+            title_label.setStyleSheet(f"color: {theme.on_dark};")
             text_container.addWidget(title_label)
             
             desc_label = QLabel(description)
             desc_label.setFont(QFont("Segoe UI", 10))
-            desc_label.setStyleSheet("color: #bdc3c7;")
+            desc_label.setStyleSheet(f"color: {theme.on_dark_subtle};")
             desc_label.setWordWrap(True)
             text_container.addWidget(desc_label)
             
@@ -190,20 +191,21 @@ class LoginWindow(QMainWindow):
         form_container = QFrame()
         form_container.setObjectName("formContainer")
         form_layout = QVBoxLayout(form_container)
+        form_layout.setContentsMargins(12, 12, 12, 12)
         form_layout.setSpacing(25)
         
         # Título do formulário
         form_title = QLabel("Bem-vindo de volta!")
         form_title.setFont(QFont("Segoe UI", 24, QFont.Weight.Bold))
         form_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        form_title.setStyleSheet("color: #2c3e50; margin-bottom: 10px;")
+        form_title.setStyleSheet(f"color: {theme.text}; margin-bottom: 10px;")
         form_layout.addWidget(form_title)
         
         # Subtítulo
         form_subtitle = QLabel("Faça login para acessar sua conta")
         form_subtitle.setFont(QFont("Segoe UI", 12))
         form_subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        form_subtitle.setStyleSheet("color: #7f8c8d; margin-bottom: 30px;")
+        form_subtitle.setStyleSheet(f"color: {theme.text_muted}; margin-bottom: 30px;")
         form_layout.addWidget(form_subtitle)
         
         # Campo de email/usuário
@@ -212,24 +214,24 @@ class LoginWindow(QMainWindow):
         
         email_label = QLabel("Nome de Usuário")
         email_label.setFont(QFont("Segoe UI", 11, QFont.Weight.Bold))
-        email_label.setStyleSheet("color: #2c3e50;")
+        email_label.setStyleSheet(f"color: {theme.text};")
         email_container.addWidget(email_label)
         
         self.email_input = QLineEdit()
         self.email_input.setPlaceholderText("Digite seu nome de usuário")
         self.email_input.setFont(QFont("Segoe UI", 12))
-        self.email_input.setStyleSheet("""
-            QLineEdit {
+        self.email_input.setStyleSheet(f"""
+            QLineEdit {{
                 padding: 12px 16px;
-                border: 2px solid #e1e8ed;
+                border: 2px solid {theme.border};
                 border-radius: 8px;
-                background-color: #ffffff;
+                background-color: {theme.surface};
                 font-size: 14px;
-            }
-            QLineEdit:focus {
-                border-color: #000000;
+            }}
+            QLineEdit:focus {{
+                border-color: {theme.focus};
                 outline: none;
-            }
+            }}
         """)
         email_container.addWidget(self.email_input)
         form_layout.addLayout(email_container)
@@ -240,25 +242,25 @@ class LoginWindow(QMainWindow):
         
         password_label = QLabel("Senha")
         password_label.setFont(QFont("Segoe UI", 11, QFont.Weight.Bold))
-        password_label.setStyleSheet("color: #2c3e50;")
+        password_label.setStyleSheet(f"color: {theme.text};")
         password_container.addWidget(password_label)
         
         self.password_input = QLineEdit()
         self.password_input.setPlaceholderText("Digite sua senha")
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
         self.password_input.setFont(QFont("Segoe UI", 12))
-        self.password_input.setStyleSheet("""
-            QLineEdit {
+        self.password_input.setStyleSheet(f"""
+            QLineEdit {{
                 padding: 12px 16px;
-                border: 2px solid #e1e8ed;
+                border: 2px solid {theme.border};
                 border-radius: 8px;
-                background-color: #ffffff;
+                background-color: {theme.surface};
                 font-size: 14px;
-            }
-            QLineEdit:focus {
-                border-color: #000000;
+            }}
+            QLineEdit:focus {{
+                border-color: {theme.focus};
                 outline: none;
-            }
+            }}
         """)
         password_container.addWidget(self.password_input)
         form_layout.addLayout(password_container)
@@ -270,29 +272,29 @@ class LoginWindow(QMainWindow):
         # Checkbox "Lembrar-me"
         self.remember_checkbox = QCheckBox("Lembrar-me")
         self.remember_checkbox.setFont(QFont("Segoe UI", 10))
-        self.remember_checkbox.setStyleSheet("""
-            QCheckBox {
-                color: #7f8c8d;
-            }
-            QCheckBox::indicator {
+        self.remember_checkbox.setStyleSheet(f"""
+            QCheckBox {{
+                color: {theme.text_muted};
+            }}
+            QCheckBox::indicator {{
                 width: 16px;
                 height: 16px;
-            }
-            QCheckBox::indicator:unchecked {
-                border: 2px solid #bdc3c7;
+            }}
+            QCheckBox::indicator:unchecked {{
+                border: 2px solid {theme.border_input};
                 border-radius: 3px;
                 background-color: white;
-            }
-            QCheckBox::indicator:checked {
-                border: 2px solid #000000;
+            }}
+            QCheckBox::indicator:checked {{
+                border: 2px solid {theme.primary};
                 border-radius: 3px;
-                background-color: #000000;
-            }
+                background-color: {theme.primary};
+            }}
         """)
         options_layout.addWidget(self.remember_checkbox)
         
         # Link "Esqueci minha senha"
-        forgot_link = QLabel("<a href='#' style='color: #000000; text-decoration: none;'>Esqueci minha senha</a>")
+        forgot_link = QLabel(f"<a href='#' style='color: {theme.link}; text-decoration: none;'>Esqueci minha senha</a>")
         forgot_link.setFont(QFont("Segoe UI", 10))
         forgot_link.setAlignment(Qt.AlignmentFlag.AlignRight)
         forgot_link.setOpenExternalLinks(False)
@@ -304,29 +306,29 @@ class LoginWindow(QMainWindow):
         # Botão de login
         self.login_button = QPushButton("Entrar")
         self.login_button.setFont(QFont("Segoe UI", 12, QFont.Weight.Bold))
-        self.login_button.setStyleSheet("""
-            QPushButton {
-                background-color: #000000;
-                color: #ffffff;
+        self.login_button.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {theme.primary};
+                color: {theme.on_dark};
                 padding: 14px;
-                border: 2px solid #000000;
+                border: 2px solid {theme.primary};
                 border-radius: 8px;
                 font-size: 14px;
                 min-height: 20px;
-            }
-            QPushButton:hover {
-                background-color: #333333;
-                border-color: #333333;
-            }
-            QPushButton:pressed {
-                background-color: #1a1a1a;
-                border-color: #1a1a1a;
-            }
-            QPushButton:disabled {
-                background-color: #cccccc;
-                border-color: #cccccc;
-                color: #666666;
-            }
+            }}
+            QPushButton:hover {{
+                background-color: {theme.primary_hover};
+                border-color: {theme.primary_hover};
+            }}
+            QPushButton:pressed {{
+                background-color: {theme.primary_pressed};
+                border-color: {theme.primary_pressed};
+            }}
+            QPushButton:disabled {{
+                background-color: {theme.disabled_bg};
+                border-color: {theme.disabled_bg};
+                color: {theme.disabled_fg};
+            }}
         """)
         self.login_button.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.login_button.clicked.connect(self._attempt_login)
@@ -335,7 +337,7 @@ class LoginWindow(QMainWindow):
         # Divisor
         divider = QFrame()
         divider.setFrameShape(QFrame.Shape.HLine)
-        divider.setStyleSheet("color: #ecf0f1;")
+        divider.setStyleSheet(f"color: {theme.divider};")
         form_layout.addWidget(divider)
         
         # Link para criar conta
@@ -344,10 +346,10 @@ class LoginWindow(QMainWindow):
         
         signup_text = QLabel("Não tem uma conta?")
         signup_text.setFont(QFont("Segoe UI", 10))
-        signup_text.setStyleSheet("color: #7f8c8d;")
+        signup_text.setStyleSheet(f"color: {theme.text_muted};")
         signup_container.addWidget(signup_text)
         
-        signup_link = QLabel("<a href='#' style='color: #000000; text-decoration: none; font-weight: bold;'>Criar conta</a>")
+        signup_link = QLabel(f"<a href='#' style='color: {theme.link}; text-decoration: none; font-weight: bold;'>Criar conta</a>")
         signup_link.setFont(QFont("Segoe UI", 10))
         signup_link.setOpenExternalLinks(False)
         signup_link.linkActivated.connect(self._show_signup)
@@ -364,78 +366,80 @@ class LoginWindow(QMainWindow):
     
     def _apply_styles(self):
         """Aplica estilos globais com melhor portabilidade"""
-        self.setStyleSheet("""
+        t = theme
+        self.setStyleSheet(f"""
             /* Estilos globais da aplicação */
-            QMainWindow {
-                background: #ffffff !important;
-                background-color: #ffffff !important;
-                color: #1e293b;
+            QMainWindow {{
+                background: {t.surface} !important;
+                background-color: {t.surface} !important;
+                color: {t.text};
                 font-family: 'Segoe UI', Arial, sans-serif;
-            }
+            }}
             
             /* Widget principal */
-            QWidget {
-                background: #ffffff !important;
-            }
+            QWidget {{
+                background: {t.surface} !important;
+            }}
             
-            QFrame#mainContainer {
-                background: #ffffff !important;
-                background-color: #ffffff !important;
-            }
+            QFrame#mainContainer {{
+                background: {t.surface} !important;
+                background-color: {t.surface} !important;
+            }}
             
-            QFrame#leftPanel {
+            QFrame#leftPanel {{
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1, 
-                    stop:0 #2c2c2c, stop:1 #1a1a1a) !important;
+                    stop:0 {t.panel_start}, stop:1 {t.panel_end}) !important;
                 border-radius: 0px;
-            }
+            }}
             
-            QFrame#rightPanel {
-                background: #ffffff !important;
-                background-color: #ffffff !important;
-            }
+            QFrame#rightPanel {{
+                background: {t.surface} !important;
+                background-color: {t.surface} !important;
+            }}
             
-            QFrame#formContainer {
-                background: #ffffff !important;
-                background-color: #ffffff !important;
-                border-radius: 0px;
-            }
+            QFrame#formContainer {{
+                background: {t.surface} !important;
+                background-color: {t.surface} !important;
+                border-radius: 14px;
+                border: 1px solid {t.border};
+            }}
             
             /* Todos os QFrame devem ter background branco por padrão */
-            QFrame {
-                background: #ffffff !important;
-                background-color: #ffffff !important;
-            }
+            QFrame {{
+                background: {t.surface} !important;
+                background-color: {t.surface} !important;
+            }}
             
             /* Labels padrão */
-            QLabel {
-                color: #1e293b;
+            QLabel {{
+                color: {t.text};
                 font-family: 'Segoe UI', Arial, sans-serif;
                 background: transparent !important;
-            }
+            }}
             
             /* Inputs padrão */
-            QLineEdit, QTextEdit {
+            QLineEdit, QTextEdit {{
                 font-family: 'Segoe UI', Arial, sans-serif;
                 border-radius: 8px;
                 padding: 8px 12px;
-                background: #ffffff !important;
-            }
+                background: {t.surface} !important;
+            }}
             
             /* Comboboxes */
-            QComboBox {
+            QComboBox {{
                 font-family: 'Segoe UI', Arial, sans-serif;
                 border-radius: 8px;
                 padding: 8px 12px;
-                background: #ffffff !important;
-            }
+                background: {t.surface} !important;
+            }}
             
             /* Botões padrão */
-            QPushButton {
+            QPushButton {{
                 font-family: 'Segoe UI', Arial, sans-serif;
                 font-weight: 600;
                 border-radius: 8px;
                 padding: 8px 16px;
-            }
+            }}
         """)
     
     def _setup_animations(self):
@@ -517,13 +521,13 @@ class LoginWindow(QMainWindow):
         msg.setIcon(QMessageBox.Icon.Critical)
         msg.setWindowTitle("Erro de Login")
         msg.setText(message)
-        msg.setStyleSheet("""
-            QMessageBox {
-                background-color: #ffffff;
-            }
-            QMessageBox QLabel {
-                color: #2c3e50;
-            }
+        msg.setStyleSheet(f"""
+            QMessageBox {{
+                background-color: {theme.surface};
+            }}
+            QMessageBox QLabel {{
+                color: {theme.text};
+            }}
         """)
         msg.exec()
     
@@ -533,13 +537,13 @@ class LoginWindow(QMainWindow):
         msg.setIcon(QMessageBox.Icon.Information)
         msg.setWindowTitle("Login Realizado")
         msg.setText(message)
-        msg.setStyleSheet("""
-            QMessageBox {
-                background-color: #ffffff;
-            }
-            QMessageBox QLabel {
-                color: #2c3e50;
-            }
+        msg.setStyleSheet(f"""
+            QMessageBox {{
+                background-color: {theme.surface};
+            }}
+            QMessageBox QLabel {{
+                color: {theme.text};
+            }}
         """)
         msg.exec()
     
@@ -549,13 +553,13 @@ class LoginWindow(QMainWindow):
         msg.setIcon(QMessageBox.Icon.Information)
         msg.setWindowTitle("Recuperar Senha")
         msg.setText("Para recuperar sua senha, entre em contato com o administrador do sistema.")
-        msg.setStyleSheet("""
-            QMessageBox {
-                background-color: #ffffff;
-            }
-            QMessageBox QLabel {
-                color: #2c3e50;
-            }
+        msg.setStyleSheet(f"""
+            QMessageBox {{
+                background-color: {theme.surface};
+            }}
+            QMessageBox QLabel {{
+                color: {theme.text};
+            }}
         """)
         msg.exec()
     

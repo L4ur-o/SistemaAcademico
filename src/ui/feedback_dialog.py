@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QCursor
 import qtawesome as qta
+from ..config import theme
 
 
 class FeedbackDialog(QDialog):
@@ -27,7 +28,7 @@ class FeedbackDialog(QDialog):
         # Título
         title_label = QLabel("Avalie uma Aula")
         title_label.setFont(QFont("Segoe UI", 16, QFont.Weight.Bold))
-        title_label.setStyleSheet("color: #2c3e50; margin-bottom: 20px;")
+        title_label.setStyleSheet(f"color: {theme.text}; margin-bottom: 20px;")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(title_label)
         
@@ -37,28 +38,28 @@ class FeedbackDialog(QDialog):
         
         # Seleção de aula
         self.aula_combo = QComboBox()
-        self.aula_combo.setStyleSheet("""
-            QComboBox {
+        self.aula_combo.setStyleSheet(f"""
+            QComboBox {{
                 padding: 8px;
-                border: 2px solid #ecf0f1;
+                border: 2px solid {theme.border};
                 border-radius: 6px;
-                background-color: #f8f9fa;
+                background-color: {theme.surface_alt};
                 font-size: 12px;
-            }
-            QComboBox:focus {
-                border-color: #3498db;
+            }}
+            QComboBox:focus {{
+                border-color: {theme.focus};
                 background-color: white;
-            }
-            QComboBox::drop-down {
+            }}
+            QComboBox::drop-down {{
                 border: none;
-            }
-            QComboBox::down-arrow {
+            }}
+            QComboBox::down-arrow {{
                 image: none;
                 border-left: 5px solid transparent;
                 border-right: 5px solid transparent;
-                border-top: 5px solid #7f8c8d;
+                border-top: 5px solid {theme.text_muted};
                 margin-right: 5px;
-            }
+            }}
         """)
         self._load_aulas()
         form_layout.addRow("Aula:", self.aula_combo)

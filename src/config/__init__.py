@@ -1,3 +1,3 @@
-from .config import config, constants
+from .config import config, constants, theme
 
-__all__ = ['config', 'constants']
+__all__ = ['config', 'constants', 'theme']
